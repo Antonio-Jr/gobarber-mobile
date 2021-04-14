@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import Icon from 'react-native-vector-icons/Feather';
 import {
   Container,
   Header,
@@ -19,7 +20,6 @@ import {
   OpenDatePickerButton,
   OpenDatePickerButtonText,
 } from './styles';
-import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 
@@ -33,6 +33,11 @@ export interface ICAProvider {
   avatar_url: string;
 }
 
+interface IAvailability {
+  hour: number;
+  available: boolean;
+}
+
 const CreateAppointment: React.FC = () => {
   const { user } = useAuth();
   const route = useRoute();
@@ -43,12 +48,27 @@ const CreateAppointment: React.FC = () => {
   const [selectedDate, setselectedDate] = useState(new Date());
   const [providers, setProviders] = useState<ICAProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState(provider_id);
+  const [availability, setAvailability] = useState<IAvailability[]>([]);
 
   useEffect(() => {
     api.get('providers').then(response => {
       setProviders(response.data);
     });
   });
+
+  useEffect(() => {
+    api
+      .get(`providers/${selectedProvider}/day-availability`, {
+        params: {
+          day: selectedDate.getDate(),
+          month: selectedDate.getMonth() + 1,
+          year: selectedDate.getFullYear(),
+        },
+      })
+      .then(response => {
+        setAvailability(response.data);
+      });
+  }, [selectedDate, selectedProvider]);
 
   const navigateBack = useCallback(() => {
     goBack();
