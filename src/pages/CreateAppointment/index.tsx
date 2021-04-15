@@ -94,6 +94,7 @@ const CreateAppointment: React.FC = () => {
   }, []);
 
   const handleDateChanged = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (event: any, date: Date | undefined) => {
       if (Platform.OS === 'android') {
         setShowDatePicker(false);
