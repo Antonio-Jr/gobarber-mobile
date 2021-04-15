@@ -11,6 +11,7 @@ import {
   BackButton,
   HeaderTitle,
   UserAvatar,
+  Content,
   ProvidersListContainer,
   ProvidersList,
   ProviderContainer,
@@ -20,6 +21,12 @@ import {
   Title,
   OpenDatePickerButton,
   OpenDatePickerButtonText,
+  Schedule,
+  Section,
+  SectionTitle,
+  SectionContent,
+  Hour,
+  HourText,
 } from './styles';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
@@ -50,6 +57,7 @@ const CreateAppointment: React.FC = () => {
   const [providers, setProviders] = useState<ICAProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState(provider_id);
   const [availability, setAvailability] = useState<IAvailability[]>([]);
+  const [selectedHour, setselectedHour] = useState(0);
 
   useEffect(() => {
     api.get('providers').then(response => {
@@ -96,6 +104,10 @@ const CreateAppointment: React.FC = () => {
     [],
   );
 
+  const handleSelectHour = useCallback((hour: number) => {
+    setselectedHour(hour);
+  }, []);
+
   const morningAvailability = useMemo(() => {
     return availability
       .filter(({ hour }) => hour < 12)
@@ -131,53 +143,97 @@ const CreateAppointment: React.FC = () => {
         <UserAvatar source={{ uri: user.avatar_url }} />
       </Header>
 
-      <ProvidersListContainer>
-        <ProvidersList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={providers}
-          keyExtractor={provider => provider.id}
-          renderItem={({ item: provider }) => (
-            <ProviderContainer
-              onPress={() => {
-                handleSelectProvider(provider.id);
-              }}
-              selected={provider.id === selectedProvider}
-            >
-              <ProviderAvatar source={{ uri: provider.avatar_url }} />
-              <ProviderName selected={provider.id === selectedProvider}>
-                {provider.name}
-              </ProviderName>
-            </ProviderContainer>
-          )}
-        />
-      </ProvidersListContainer>
-      <Calendar>
-        <Title>Escolha a data</Title>
-        <OpenDatePickerButton onPress={handleToggleDatePicker}>
-          <OpenDatePickerButtonText>
-            Selecionar outra data
-          </OpenDatePickerButtonText>
-        </OpenDatePickerButton>
-        {showdatePicker && (
-          <DateTimePicker
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            {...(Platform.OS === 'ios' && { textColor: '#f4ede8' })}
-            mode="date"
-            onChange={handleDateChanged}
-            display={Platform.OS === 'android' ? 'calendar' : 'spinner'}
-            value={selectedDate}
+      <Content>
+        <ProvidersListContainer>
+          <ProvidersList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={providers}
+            keyExtractor={provider => provider.id}
+            renderItem={({ item: provider }) => (
+              <ProviderContainer
+                onPress={() => {
+                  handleSelectProvider(provider.id);
+                }}
+                selected={provider.id === selectedProvider}
+              >
+                <ProviderAvatar source={{ uri: provider.avatar_url }} />
+                <ProviderName selected={provider.id === selectedProvider}>
+                  {provider.name}
+                </ProviderName>
+              </ProviderContainer>
+            )}
           />
-        )}
-      </Calendar>
+        </ProvidersListContainer>
+        <Calendar>
+          <Title>Escolha a data</Title>
+          <OpenDatePickerButton onPress={handleToggleDatePicker}>
+            <OpenDatePickerButtonText>
+              Selecionar outra data
+            </OpenDatePickerButtonText>
+          </OpenDatePickerButton>
+          {showdatePicker && (
+            <DateTimePicker
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...(Platform.OS === 'ios' && { textColor: '#f4ede8' })}
+              mode="date"
+              onChange={handleDateChanged}
+              display={Platform.OS === 'android' ? 'calendar' : 'spinner'}
+              value={selectedDate}
+            />
+          )}
+        </Calendar>
 
-      {morningAvailability.map(({ formattedHour }) => (
-        <Title key={formattedHour}>{formattedHour}</Title>
-      ))}
+        <Schedule>
+          <Title>Escolha um horário</Title>
 
-      {afternoonAvailability.map(({ formattedHour }) => (
-        <Title key={formattedHour}>{formattedHour}</Title>
-      ))}
+          <Section>
+            <SectionTitle>Manhã</SectionTitle>
+            <SectionContent>
+              {morningAvailability.map(({ hour, formattedHour, available }) => (
+                <Hour
+                  enabled={available}
+                  selected={selectedHour === hour}
+                  available={available}
+                  key={formattedHour}
+                  onPress={() => handleSelectHour(hour)}
+                >
+                  <HourText
+                    available={available}
+                    selected={selectedHour === hour}
+                  >
+                    {formattedHour}
+                  </HourText>
+                </Hour>
+              ))}
+            </SectionContent>
+          </Section>
+
+          <Section>
+            <SectionTitle>Tarde</SectionTitle>
+            <SectionContent>
+              {afternoonAvailability.map(
+                ({ hour, formattedHour, available }) => (
+                  <Hour
+                    enabled={available}
+                    selected={selectedHour === hour}
+                    available={available}
+                    key={formattedHour}
+                    onPress={() => handleSelectHour(hour)}
+                  >
+                    <HourText
+                      available={available}
+                      selected={selectedHour === hour}
+                    >
+                      {formattedHour}
+                    </HourText>
+                  </Hour>
+                ),
+              )}
+            </SectionContent>
+          </Section>
+        </Schedule>
+      </Content>
     </Container>
   );
 };
