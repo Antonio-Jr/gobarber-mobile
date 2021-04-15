@@ -1,8 +1,8 @@
 import { FlatList } from 'react-native';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
-import { ICAProvider } from './index';
-import styled from 'styled-components/native'
+import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
+import { ICAProvider } from './index';
 
 interface ProviderContainerProps {
   selected: boolean;
@@ -42,16 +42,18 @@ export const UserAvatar = styled.Image`
   margin-left: auto;
 `;
 
-export const ProvidersListContainer  = styled.View`
+export const ProvidersListContainer = styled.View`
   height: 112px;
 `;
 
-export const ProvidersList= styled(FlatList as new () => FlatList<ICAProvider>)`
+export const ProvidersList = styled(
+  FlatList as new () => FlatList<ICAProvider>,
+)`
   padding: 32px 24px;
 `;
 
 export const ProviderContainer = styled(RectButton)<ProviderContainerProps>`
-  background: ${props => props.selected ? '#ff9000' : '#3e3b47'} ;
+  background: ${props => (props.selected ? '#ff9000' : '#3e3b47')};
   flex-direction: row;
   padding: 8px 12px;
   align-items: center;
@@ -69,12 +71,10 @@ export const ProviderName = styled.Text<ProviderNameProps>`
   margin-left: 8px;
   font-family: 'RobotoSlab-Medium';
   font-size: 16px;
-  color: ${props => props.selected ? '#232129' : '#f4ede8'} ;
+  color: ${props => (props.selected ? '#232129' : '#f4ede8')};
 `;
 
-export const Calendar = styled.View`
-
-`;
+export const Calendar = styled.View``;
 
 export const Title = styled.Text`
   font-family: 'RobotoSlab-Medium';
