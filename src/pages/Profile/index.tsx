@@ -93,7 +93,6 @@ const SignUp: React.FC = () => {
         };
 
         const response = await api.put('/profile', formData);
-        console.log(response);
         updateUser(response.data);
 
         Alert.alert('Perfil atualizado com sucesso!');
