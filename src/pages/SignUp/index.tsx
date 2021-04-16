@@ -4,18 +4,17 @@ import Icon from 'react-native-vector-icons/Feather';
 
 import * as Yup from 'yup';
 
-import logoImg from '../../assets/logo.png';
-
-import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import { useCallback } from 'react';
-import getValidationErrors from '../../utils/getValidationErros';
 import { Alert } from 'react-native';
+import getValidationErrors from '../../utils/getValidationErros';
+import Button from '../../components/Button';
+import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
+import Input from '../../components/Input';
+import logoImg from '../../assets/logo.png';
 import api from '../../services/api';
 
 interface SignUpFormData {
@@ -90,7 +89,7 @@ const SignUp: React.FC = () => {
             <Form ref={formRef} onSubmit={handleSignUp}>
               <Input
                 name="name"
-                autoCorrect={true}
+                autoCorrect
                 autoCapitalize="words"
                 icon="user"
                 placeholder="Nome"

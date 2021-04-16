@@ -14,6 +14,7 @@ import { Container, TextInput, Icon } from './styles';
 interface InputProps extends TextInputProps {
   name: string;
   icon: string;
+  containerStyle?: {};
 }
 
 interface InputValueReference {
@@ -25,7 +26,7 @@ interface InputRef {
 }
 
 const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
-  { name, icon, ...rest },
+  { name, icon, containerStyle = {}, ...rest },
   ref,
 ) => {
   const inputElementRef = useRef<any>(null);
@@ -55,6 +56,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
       name: fieldName,
       ref: inputValueRef.current,
       path: 'value',
+      // eslint-disable-next-line no-shadow
       setValue(ref: any, value) {
         inputValueRef.current.value = value;
         inputElementRef.current.setNativeProps({ text: value });
@@ -67,7 +69,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   }, [fieldName, registerField]);
 
   return (
-    <Container isFocused={isFocused} isErrored={!!error}>
+    <Container style={containerStyle} isFocused={isFocused} isErrored={!!error}>
       <Icon
         name={icon}
         size={16}
@@ -83,6 +85,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
         onChangeText={value => {
           inputValueRef.current.value = value;
         }}
+        // eslint-disable-next-line react/jsx-props-no-spreading
         {...rest}
       />
     </Container>
